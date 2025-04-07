@@ -51,7 +51,12 @@ set_target_properties(${TARGET_NAME} PROPERTIES
         VERSION ${CPPKAFKA_VERSION}
         SOVERSION ${CPPKAFKA_VERSION})
 # In CMake >= 3.15 Boost::boost == Boost::headers
+if (CPPKAFKA_USE_BOOST)
 target_link_libraries(${TARGET_NAME} PUBLIC RdKafka::rdkafka Boost::boost)
+else()
+target_link_libraries(${TARGET_NAME} PUBLIC RdKafka::rdkafka)
+endif()
+
 if (WIN32)
     # On windows ntohs and related are in ws2_32
     target_link_libraries(${TARGET_NAME} PUBLIC ws2_32.lib)

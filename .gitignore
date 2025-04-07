@@ -1,2 +1,7 @@
 build
 include/cppkafka/config.h
+
+.cache
+vcpkg_installed
+vcpkg.json
+CMakePresets.json
