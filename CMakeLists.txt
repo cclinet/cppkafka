@@ -5,6 +5,8 @@ if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.12.0")
     cmake_policy(SET CMP0074 NEW)
 endif()
 
+set(CMAKE_CXX_STANDARD 17)
+
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
@@ -46,6 +48,8 @@ option(CPPKAFKA_BOOST_USE_MULTITHREADED "Use Boost multithreaded libraries." ON)
 option(CPPKAFKA_RDKAFKA_STATIC_LIB "Link with Rdkafka static library." OFF)
 option(CPPKAFKA_EXPORT_PKGCONFIG "Generate 'cppkafka.pc' file" ON)
 option(CPPKAFKA_EXPORT_CMAKE_CONFIG "Generate CMake config, target and version files." ON)
+
+add_compile_options("-Wno-unqualified-std-cast-call")
 
 # Add FindRdKafka.cmake
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
@@ -104,23 +108,7 @@ if (NOT CPPKAFKA_PKGCONFIG_DIR)
     set(CPPKAFKA_PKGCONFIG_DIR share/pkgconfig)
 endif()
 
-# Look for Boost (just need boost.optional headers here)
-find_package(Boost REQUIRED ${FIND_PACKAGE_QUIET})
 
-if (Boost_FOUND)
-    find_package(Boost COMPONENTS program_options ${FIND_PACKAGE_QUIET})
-    set(Boost_USE_STATIC_LIBS ${CPPKAFKA_BOOST_STATIC_LIBS})
-    set(Boost_USE_MULTITHREADED ${CPPKAFKA_BOOST_USE_MULTITHREADED})
-    include_directories(${Boost_INCLUDE_DIRS})
-    link_directories(${Boost_LIBRARY_DIRS})
-    if (CPPKAFKA_CMAKE_VERBOSE)
-        message(STATUS "Boost include dir: ${Boost_INCLUDE_DIRS}")
-        message(STATUS "Boost library dir: ${Boost_LIBRARY_DIRS}")
-        message(STATUS "Boost use static libs: ${Boost_USE_STATIC_LIBS}")
-        message(STATUS "Boost is multi-threaded: ${CPPKAFKA_BOOST_USE_MULTITHREADED}")
-        message(STATUS "Boost libraries: ${Boost_LIBRARIES}")
-    endif()
-endif()
 
 # Try to find the RdKafka configuration file if present.
 # This will search default system locations as well as RdKafka_ROOT and RdKafka_Dir paths if specified.

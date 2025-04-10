@@ -27,8 +27,10 @@
  *
  */
 
+ #include <any>
 #include "utils/poll_strategy_base.h"
 #include "consumer.h"
+
 
 using std::chrono::milliseconds;
 
@@ -36,7 +38,7 @@ namespace cppkafka {
 
 PollStrategyBase::PollStrategyBase(Consumer& consumer)
 : consumer_(consumer),
-  consumer_queue_(QueueData{consumer.get_consumer_queue(), boost::any()}) {
+  consumer_queue_(QueueData{consumer.get_consumer_queue(), std::any()}) {
     // get all currently active partition assignments
     TopicPartitionList assignment = consumer_.get_assignment();
     on_assignment(assignment);
@@ -93,7 +95,7 @@ void PollStrategyBase::assign(TopicPartitionList& partitions) {
     // populate partition queues
     for (const auto& partition : partitions) {
         // get the queue associated with this partition
-        partition_queues_.emplace(partition, QueueData{consumer_.get_partition_queue(partition), boost::any()});
+        partition_queues_.emplace(partition, QueueData{consumer_.get_partition_queue(partition), std::any()});
     }
     reset_state();
 }
